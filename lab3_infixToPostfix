@@ -1,0 +1,109 @@
+#include <stdio.h>
+#include <conio.h>
+#include <ctype.h>
+#include <string.h>
+#define MAX 100
+char st[MAX];
+int top=-1;
+void push (char st[],char);
+char pop(char st[]);
+void infixToPostfix(char  a [],char b[]);
+int priority(char);
+
+int main(){
+char infix[100],postfix[100];
+//clrscr();
+printf("\n Enter any infix expression:\n");
+gets(infix);
+strcpy(postfix,  " ");
+infixToPostfix(infix,postfix);
+printf("\n the  postfix expression is of the above is: ");
+puts(postfix);
+getch();
+return 0;
+}
+
+void infixToPostfix(char a[ ],char b[ ]){
+int i=0,j=0;
+char temp;
+strcpy(b," ");
+while(a[i]!='\0'){
+  if(a[i]=='(')
+  {
+    push(st,a[i]);
+    i++;
+  }
+  else if (a[i]==')')
+  {
+    while((top!=-1) &&( st[top]!='(') )//&& (a[i]=='+' || a[i]=='-' || a[i]=='*' || a[i]=='/' || a[i]=='%' ||a[i]=='^')) //edit here
+    {
+      b[j]=pop(st);
+      j++;
+    }
+    if(top==-1)
+    {
+      printf("\n Invalid expression");
+      exit(1);
+    }
+    temp=pop(st);
+    i++;
+  }
+  else if(isdigit(a[i]) || isalpha(a[i]))
+  {
+    b[j]=a[i];
+    j++;
+    i++;
+  }
+  else if(a[i]=='+' || a[i]=='-' || a[i]=='*' || a[i]=='/' || a[i]=='%' ||a[i]=='^')
+  {
+    while((top!=-1) && (st[top]!='(') && (priority(st[top])>priority(a[i])))
+    {
+      b[j]=pop(st);
+      j++;
+    }
+    push (st,a[i]);
+    i++;
+  }
+  else
+  {
+    printf("\n INCORRECT ELEMENT IN THE ABOVE EXPRESSION");
+    exit(1);
+  }
+}
+while((top!=-1) && (st[top]!='('))
+{
+  b[j]=pop(st);
+  j++;
+}
+b[j]='\0';
+}
+int priority(char op)
+{
+  if(op=='/' || op=='*' || op=='%' ||op=='^' )
+return 1;
+else if(op=='+' || op=='-')
+  return 0;
+}
+void push (char st[],char val)
+{
+  //if(top=MAX-1)
+    //printf("\n STACK OVERFLOW");
+  //else
+  //{
+    top++;
+    st[top]=val;
+  //}
+}
+char pop(char st[])
+{
+  char val='  ';
+  if(top==-1)
+    printf("\n STACK UNDERFLOW");
+  else
+  {
+    val=st[top];
+    top--;
+  }
+  return val;
+}
+
